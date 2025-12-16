@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # Default values
-FAIL_ON="error"
+FAIL_ON="warning"
 WORKING_DIRECTORY="./"
 TOKEN=""
 CHECK_RENAMED_FILES=false
 EMOJIS=true
 FORMAT=true
 LINE_LENGTH=null
+FAIL_ON_FORMAT=true
 
 # Usage function
 usage() {
@@ -16,7 +17,8 @@ usage() {
     echo "Options:"
     echo "-t, --token <token>              Required authentication token."
     echo ""
-    echo "    --fail-on <value>            Set failure level (nothing, format, info, warning, error). Default: warning."
+    echo "    --fail-on <value>            Set failure level (nothing, note, info, warning, error). Default: warning."
+    echo "    --[no-]fail-on-format        Set whether to fail on format issues. Default: true."
     echo "    --working-directory <path>   Set the working directory. Default: ./"
     echo "    --[no-]check-renamed-files   Enable or disable checking renamed files. Default: false."
     echo "    --[no-]emojis                Enable or disable emojis. Default: true."
@@ -77,6 +79,12 @@ while [[ $# -gt 0 ]]; do
         --no-format)
             FORMAT=false
             ;;
+        --fail-on-format)
+            FAIL_ON_FORMAT=true
+            ;;
+        --no-fail-on-format)
+            FAIL_ON_FORMAT=false
+            ;;
         --line-length=*)
             LINE_LENGTH=$(get_arg_value "$1")
             ;;
@@ -107,6 +115,7 @@ curl https://raw.githubusercontent.com/ValentinVignal/action-dart-analyze/refs/h
 
 # Run the Node.js script with environment variables
 INPUT_FAIL_ON="$FAIL_ON"
+INPUT_FAIL_ON_FORMAT="$FAIL_ON_FORMAT" \
 INPUT_WORKING_DIRECTORY="$WORKING_DIRECTORY" \
 INPUT_TOKEN="$TOKEN" \
 INPUT_CHECK_RENAMED_FILES="$CHECK_RENAMED_FILES" \

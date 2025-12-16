@@ -32122,8 +32122,10 @@ class DartAnalyzeLogType {
         switch (logType) {
             case DartAnalyzeLogTypeEnum.Error:
                 return 'ERROR';
-            default:
+            case DartAnalyzeLogTypeEnum.Warning:
                 return 'WARNING';
+            default:
+                return 'NOTICE';
         }
     }
     /**
@@ -38675,7 +38677,8 @@ class Result {
      * Global title put in the comment or in the console at the end of the analysis.
      */
     title(params) {
-        const title = `Dart Analyzer found ${this.count} issue${Result.pluralS(this.count)}`;
+        // TODO: Remove
+        const title = `Dart Analyzer found ${this.count} issue${Result.pluralS(this.count)} @ count 1`;
         if (params?.emojis && this.actionOptions.emojis) {
             let emoji = ':tada:';
             if (this.analyze.counts.failCount) {

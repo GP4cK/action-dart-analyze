@@ -38821,6 +38821,7 @@ const getInputMultilineString = (name) => {
  */
 const getSeverityOverrides = () => {
     const input = getInputString('severity-overrides');
+    console.log('severity-overrides input:', input);
     const map = new Map();
     if (!input) {
         return map;
@@ -38838,6 +38839,7 @@ const getSeverityOverrides = () => {
         const valueEnum = DartAnalyzeLogType.typeFromString(value);
         map.set(key, valueEnum);
     }
+    console.log('Parsed severity-overrides:', map);
     return map;
 };
 /**

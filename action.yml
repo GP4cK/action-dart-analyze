@@ -6,9 +6,13 @@ branding:
   color: 'gray-dark'
 inputs:
   fail-on:
-    description: 'When the action will fail. Optional. Option: `error`, `warning`, `info`, `format`, `nothing`. Default: `error`.'
-    default: 'error'
+    description: 'When the action will fail. Optional. Option: `error`, `warning`, `info`, `note`, `nothing`. Default: `warning`.'
+    default: 'warning'
     required: false
+  fail-on-format:
+    description: 'Whether it should fail on formatting issues. Options: `false`, `true`. Default: `true`.'
+    required: false
+    default: 'true'
   working-directory:
     description: 'The working directory. Optional. Default: `./`.'
     default: ./
@@ -30,6 +34,9 @@ inputs:
     required: false
     default: 'true'
   line-length:
+    description: 'The line length for that dart format command. Default: default value for `flutter format`.'
+    required: false
+  severity-overrides:
     description: 'The line length for that dart format command. Default: default value for `flutter format`.'
     required: false
 

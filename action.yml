@@ -37,7 +37,7 @@ inputs:
     description: 'The line length for that dart format command. Default: default value for `flutter format`.'
     required: false
   severity-overrides:
-    description: 'The line length for that dart format command. Default: default value for `flutter format`.'
+    description: 'The severity overrides to apply. Format: `lint_name: severity` per line. Optional.'
     required: false
 
 runs:

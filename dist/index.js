@@ -32362,13 +32362,9 @@ class AnalyzeResult {
         const comments = [];
         for (const line of this.lines) {
             const urls = `See [link](${line.line.urls[0]}) or [link](${line.line.urls[1]}).`;
-            let failEmoji = '';
-            if ([FailOnEnum.Error, FailOnEnum.Warning].includes(this.actionOptions.failOn)) {
-                failEmoji = `:${line.line.isFail ? 'x' : 'poop'}: `;
-            }
             const highlight = line.line.isFail ? '**' : '';
             const humanReadableString = `${DartAnalyzeLogType.typeToString(line.line.type)} - \`${line.file.name}\`:${line.line.line}:${line.line.column} - ${line.line.message} (${line.line.lintName}).`;
-            comments.push(`- ${this.actionOptions.emojis ? failEmoji + line.line.emoji + ' ' : ''}${highlight}${humanReadableString}${highlight} ${urls}`);
+            comments.push(`- ${this.actionOptions.emojis ? line.line.emoji + ' ' : ''}${highlight}${humanReadableString}${highlight} ${urls}`);
         }
         return comments.join('\n');
     }
@@ -38664,6 +38660,12 @@ class Result {
                 type: DartAnalyzeLogTypeEnum.Info,
             }),
         ];
+        if ([...this.actionOptions.severityOverrides.values()].some((value) => value === DartAnalyzeLogTypeEnum.Note)) {
+            messages.push(this.titleLineAnalyze({
+                ...params,
+                type: DartAnalyzeLogTypeEnum.Note,
+            }));
+        }
         if (this.actionOptions.format) {
             messages.push(this.titleLineFormat({ ...params }));
         }

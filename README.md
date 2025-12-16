@@ -17,10 +17,14 @@ Create a `.yml` file in `./github/workflows/` in your project.
     - `'error'`: Fails only on analyze error.
     - `'warning'`: Fails on warnings and errors.
     - `'info'`: Fails on info, warnings and errors from `dart analyze`.
-    - `'format'`: Fails on everything, including bad formatting.
+    - `'note'`: Fails on everything, including notes.
     - `'nothing'`: Fails on nothing.
   - Optional.
   - Default: `'warning'`.
+- `fail-on-format`: If set to `'false'`, it will not fail the action on format issues.
+  - Options: `'true'`, `'false'`.
+  - Optional.
+  - Default: `'true'`.
 - `working-directory`: The working directory.
   - Optional.
   - Default: `'./'`.
@@ -77,7 +81,7 @@ jobs:
         uses: subosito/flutter-action@v2
       - run: flutter pub get
       - name: Analyze Flutter
-        uses: ValentinVignal/action-dart-analyze@v1.1
+        uses: ValentinVignal/action-dart-analyze@v2.0
 ```
 
 ## Using the `GITHUB_TOKEN` in a workflow
@@ -94,6 +98,7 @@ Options:
 -t, --token <token>              Required authentication token.
 
     --fail-on <value>            Set failure level (nothing, format, info, warning, error). Default: error.
+    --[no-]fail-on-format        Set whether to fail on format issues. Default: true.
     --working-directory <path>   Set the working directory. Default: ./
     --[no-]check-renamed-files   Enable or disable checking renamed files. Default: false.
     --[no-]emojis                Enable or disable emojis. Default: true.

@@ -32326,7 +32326,7 @@ class AnalyzeResultCounts {
      * The total number of logs
      */
     get total() {
-        return this.info + this.warnings + this.errors;
+        return this.info + this.warnings + this.errors + this.notes;
     }
     get failCount() {
         let count = 0;
@@ -32336,6 +32336,9 @@ class AnalyzeResultCounts {
                 count += this.warnings;
                 if (this.actionOptions.failOn !== FailOnEnum.Warning) {
                     count += this.info;
+                    if (this.actionOptions.failOn !== FailOnEnum.Info) {
+                        count += this.notes;
+                    }
                 }
             }
         }
@@ -38471,8 +38474,9 @@ class FormatResult {
     }
     get commentBody() {
         const comments = [];
+        const highlight = this.success ? '' : '**';
         for (const file of this.files) {
-            comments.push(`- ${this.actionOptions.emojis ? ':poop: ' : ''} \`${file}\` is not formatted.`);
+            comments.push(`- ${this.actionOptions.emojis ? ':poop: ' : ''} ${highlight}\`${file}\` is not formatted.${highlight}`);
         }
         return comments.join('\n');
     }
@@ -38668,7 +38672,8 @@ class Result {
                 type: DartAnalyzeLogTypeEnum.Info,
             }),
         ];
-        if ([...this.actionOptions.severityOverrides.values()].some((value) => value === DartAnalyzeLogTypeEnum.Note)) {
+        if (this.analyze.counts.notes ||
+            [...this.actionOptions.severityOverrides.values()].some((value) => value === DartAnalyzeLogTypeEnum.Note)) {
             messages.push(this.titleLineAnalyze({
                 ...params,
                 type: DartAnalyzeLogTypeEnum.Note,
@@ -38683,8 +38688,7 @@ class Result {
      * Global title put in the comment or in the console at the end of the analysis.
      */
     title(params) {
-        // TODO: Remove
-        const title = `Dart Analyzer found ${this.count} issue${Result.pluralS(this.count)} @ count 1`;
+        const title = `Dart Analyzer found ${this.count} issue${Result.pluralS(this.count)}`;
         if (params?.emojis && this.actionOptions.emojis) {
             let emoji = ':tada:';
             if (this.analyze.counts.failCount) {
@@ -38745,7 +38749,7 @@ class Result {
         const highlight = params.emojis && this.format.count && this.actionOptions.failOnFormat
             ? '**'
             : '';
-        return `- ${params.emojis && this.actionOptions.emojis ? emoji : ''}${highlight}${this.format.count} formatting issue${Result.pluralS(this.format.count)}${highlight}`;
+        return `- ${params.emojis && this.actionOptions.emojis ? emoji : ''}${highlight}${this.format.count} formatting issue${Result.pluralS(this.format.count)}.${highlight}`;
     }
     /**
      * Log the results in the github action
@@ -38827,7 +38831,6 @@ const getInputMultilineString = (name) => {
  */
 const getSeverityOverrides = () => {
     const input = getInputString('severity-overrides');
-    console.log('severity-overrides input:', input);
     const map = new Map();
     if (!input) {
         return map;
@@ -38838,14 +38841,15 @@ const getSeverityOverrides = () => {
         const trimmed = entry.trim();
         if (!trimmed)
             continue;
-        const [key, value] = trimmed.split(':').map((part) => part.trim());
+        const [key, value] = trimmed
+            .split(':')
+            .map((part) => part.trim().toLocaleLowerCase());
         if (!key || !value) {
             throw new Error(`Invalid format for severity-overrides: "${entry}". Expected format: "key: value"`);
         }
         const valueEnum = DartAnalyzeLogType.typeFromString(value);
         map.set(key, valueEnum);
     }
-    console.log('Parsed severity-overrides:', map);
     return map;
 };
 /**

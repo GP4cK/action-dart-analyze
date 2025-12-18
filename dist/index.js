@@ -38469,6 +38469,12 @@ class FormatResult {
     get success() {
         return !this.actionOptions.failOnFormat || !this.files.size;
     }
+    /**
+     * Whether there are any format issues (even non-failing ones).
+     */
+    get hasIssues() {
+        return this.count > 0;
+    }
     get count() {
         return this.files.size;
     }
@@ -38631,11 +38637,19 @@ class Result {
         return this.analyze.success && this.format.success;
     }
     /**
+     * Whether there are any issues (analyze or format). Those issues can be
+     * non-failing.
+     */
+    get hasIssues() {
+        return this.analyze.hasWarning || this.format.hasIssues;
+    }
+    /**
      * Put a comment on the PR
      */
     async comment() {
         const messages = [this.issueCountMessage({ emojis: true })];
-        if (this.success) {
+        if (this.success &&
+            (!this.hasIssues || !this.actionOptions.commentOnSuccess)) {
             await comment({}, this.actionOptions);
         }
         else {
@@ -38877,6 +38891,8 @@ const applyDefaults = (options) => {
         analyzerLines: options?.analyzerLines ?? getInputMultilineString('analyzer-lines'),
         formatLines: options?.formatLines ?? getInputMultilineString('format-lines'),
         severityOverrides: options?.severityOverrides ?? getSeverityOverrides(),
+        commentOnSuccess: options?.commentOnSuccess ??
+            (getInputString('comment-on-success') || 'true') === 'true',
     };
 };
 //# sourceMappingURL=ActionOptions.js.map

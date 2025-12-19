@@ -1,3 +1,14 @@
+## 2.1
+
+- Adds `comment-on-success` input to allow posting comments even when there are no failing issues found. Defaults to `true`.
+
+## 2.0
+
+- Adds parameter `severity-overrides`.
+- Adds parameter `fail-on-format`.
+- Removes `format` from the options of `fail-on`.
+- Adds `note` to the options of `fail-on`.
+
 ## 1.1
 
 - Makes the action update the existing comment instead of creating new ones.

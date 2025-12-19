@@ -39,6 +39,10 @@ inputs:
   severity-overrides:
     description: 'The severity overrides to apply. Format: `lint_name: severity` per line. Optional.'
     required: false
+  comment-on-success:
+    description: 'Whether it should post a comment even if there are no failing issues found. Options: `false`, `true`. Default: `true`.'
+    required: false
+    default: 'true'
 
 runs:
   using: 'node20'
